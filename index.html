@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4th Grade Zearn Login Portal</title>
+    <style>
+        :root {
+            --primary: #0056b3;
+            --primary-hover: #004494;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-dark: #333333;
+            --text-muted: #666666;
+            --border: #e0e0e0;
+            --zearn-yellow: #fcd116;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-size: 1.8rem;
+        }
+
+        p.subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 1rem;
+            background-color: #fff;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.1);
+        }
+
+        select:disabled {
+            background-color: #f9f9f9;
+            cursor: not-allowed;
+        }
+
+        button {
+            width: 100%;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        /* Results Card */
+        #result-card {
+            display: none;
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 8px;
+            background-color: #f8fbff;
+            border: 1px solid #cce5ff;
+        }
+
+        .result-item {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .result-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
+        .result-value {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary);
+            background: #fff;
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            margin-top: 4px;
+            word-break: break-all;
+        }
+
+        .instructions {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px dashed #b8daff;
+        }
+
+        .instructions h3 {
+            font-size: 1rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .instructions ul {
+            list-style-position: inside;
+            color: var(--text-dark);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        .highlight {
+            background-color: var(--zearn-yellow);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>4th Grade Zearn Portal</h1>
+        <p class="subtitle">Find your student's login credentials instantly.</p>
+
+        <div class="form-group">
+            <label for="section-select">1. Select Section</label>
+            <select id="section-select">
+                <option value="">-- Choose Section --</option>
+                <option value="4A">4A</option>
+                <option value="4B">4B</option>
+                <option value="4C">4C</option>
+                <option value="4D">4D</option>
+                <option value="4E">4E</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="student-select">2. Select Student</label>
+            <select id="student-select" disabled>
+                <option value="">-- Choose Student --</option>
+            </select>
+        </div>
+
+        <button id="get-login-btn">Get Login Details</button>
+
+        <div id="result-card">
+            <div class="result-item">
+                <span class="result-label">Username</span>
+                <span class="result-value" id="res-username">-</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Password</span>
+                <span class="result-value" id="res-password">-</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Class Code</span>
+                <span class="result-value" id="res-code">-</span>
+            </div>
+
+            <div class="instructions">
+                <h3>Homework Instructions:</h3>
+                <ul>
+                    <li>You must complete <strong>Lesson 1</strong> in its entirety.</li>
+                    <li>You are finished when you successfully complete the <span class="highlight">Tower of Power</span>.</li>
+                    <li>Remember to fill in your printed <strong>Zearn Math Notes</strong> while working on the Math Chat.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const schoolData = {
+            "4A": {
+                code: "XX9U9V",
+                students: [
+                    { name: "Maria Aplicano", user: "MariaAplicano", pass: "crazyfish68" },
+                    { name: "Daniela Ayala", user: "DanielaAyala", pass: "kindhorse38" },
+                    { name: "Alessandro Barahona", user: "AlessandroBarahona", pass: "funshark36" },
+                    { name: "Emma Carcamo", user: "EmmaCarcamo", pass: "calmshark5" },
+                    { name: "Joaquin Carias", user: "JoaquinCarias", pass: "crazylion39" },
+                    { name: "Marcela Castro", user: "MarcelaCastro", pass: "speedyshark26" },
+                    { name: "Daniel Chacon", user: "DanielChacon2", pass: "funlion99" },
+                    { name: "Santiago Cortes", user: "SantiagoCortes5", pass: "bluebear17" },
+                    { name: "Adriana Diaz", user: "AdrianaDiaz5", pass: "zanycat72" },
+                    { name: "Alyssa Flores", user: "AlyssaFlores2", pass: "fastshark99" },
+                    { name: "Hayden Gonzalez", user: "HaydenGonzalez3", pass: "calmwolf36" },
+                    { name: "Michael Herrera", user: "MichaelHerrera13", pass: "coolstar46" },
+                    { name: "Valeria Lopez", user: "ValeriaLopez", pass: "happyhorse54" },
+                    { name: "Ambar Medina", user: "AmbarMedina2", pass: "kindwhale78" },
+                    { name: "Dominic Padilla", user: "DominicPadilla13", pass: "sillywolf45" },
+                    { name: "Gianna Quintero", user: "GiannaQuintero2", pass: "happylion34" },
+                    { name: "Joaquin Reyes", user: "JoaquinReyes4", pass: "calmfish54" },
+                    { name: "Genesis Rodriguez", user: "GenesisRodriguez17", pass: "fastdog16" },
+                    { name: "Santiago Romero", user: "SantiagoRomero6", pass: "sillystar11" },
+                    { name: "Max Sabillon", user: "MaxSabillon", pass: "sillysun71" },
+                    { name: "Thiago Vasquez", user: "ThiagoVasquez2", pass: "fastbear23" }
+                ]
+            },
+            "4B": {
+                code: "DH3P2G",
+                students: [
+                    { name: "Ronald Aguilera", user: "RonaldAguilera", pass: "smallhorse64" },
+                    { name: "Anna Andino", user: "AnnaAndino", pass: "crazysun91" },
+                    { name: "Leah Avilez", user: "LeahAvilez", pass: "sillybear23" },
+                    { name: "Lucas Barrientos", user: "LucasBarrientos", pass: "coollion86" },
+                    { name: "Giovanna Bertrand", user: "GiovannaBertrand", pass: "calmshark47" },
+                    { name: "Kay Bustillo", user: "KayBustillo", pass: "reddog11" },
+                    { name: "Carlos Calix", user: "CarlosCalix", pass: "calmdog25" },
+                    { name: "Roger Galindo", user: "RogerGalindo", pass: "fastmoon13" },
+                    { name: "Jose Lopez", user: "JoseLopez53", pass: "speedytiger65" },
+                    { name: "Antony Maradiaga", user: "AntonyMaradiaga", pass: "speedybear35" },
+                    { name: "Fabian Maradiaga", user: "FabianMaradiaga", pass: "crazymouse39" },
+                    { name: "Arianna Matamoros", user: "AriannaMatamoros", pass: "happystar93" },
+                    { name: "Luis Matamoros", user: "LuisMatamoros", pass: "calmmoon88" },
+                    { name: "Dulce Navas", user: "DulceNavas", pass: "speedywhale99" },
+                    { name: "Hector Pineda", user: "HectorPineda", pass: "kindeagle79" },
+                    { name: "Edgar Ramires", user: "EdgarRamires", pass: "bluedog30" },
+                    { name: "Alia Rodriguez", user: "AliaRodriguez2", pass: "speedysteel50" },
+                    { name: "Tzadik Ruiz", user: "TzadikRuiz2", pass: "sillyfish51" },
+                    { name: "Kiara Soto", user: "KiaraSoto", pass: "cooldog30" },
+                    { name: "Daniela Villanueva", user: "DanielaVillanueva", pass: "speedycat94" }
+                ]
+            },
+            "4C": {
+                code: "JT6V2D",
+                students: [
+                    { name: "Karla Aguilar", user: "KarlaAguilar2", pass: "calmparrot93" },
+                    { name: "Abdiel Alba", user: "AbdielAlba2", pass: "lightbear26" },
+                    { name: "Danna Cruz", user: "DannaCruz5", pass: "coolhawk5" },
+                    { name: "Erika Elvir", user: "ErikaElvir2", pass: "speedymouse29" },
+                    { name: "Ariana Escalante", user: "ArianaEscalante2", pass: "bluewhale29" },
+                    { name: "Deborah Flores", user: "DeborahFlores5", pass: "sillydog34" },
+                    { name: "Adriana Fuentes", user: "AdrianaFuentes4", pass: "lightwolf7" },
+                    { name: "Jose Maldonado", user: "JoseMaldonado6", pass: "happycat83" },
+                    { name: "Daniela Medina", user: "DanielaMedina3", pass: "calmstar61" },
+                    { name: "Oscar Molina", user: "OscarMolina5", pass: "funhorse15" },
+                    { name: "Julian Ordoñez", user: "JulianOrdoñez2", pass: "speedyhawk14" },
+                    { name: "David Reyes", user: "DavidReyes7", pass: "calmshark42" },
+                    { name: "Dylan Rodriguez", user: "DylanRodriguez8", pass: "redparrot73" },
+                    { name: "Bruno Rodríguez", user: "BrunoRodríguez", pass: "speedylion22" },
+                    { name: "Mateo Soriano", user: "MateoSoriano2", pass: "redhorse66" },
+                    { name: "Rebecca Sorto", user: "RebeccaSorto2", pass: "calmwolf41" },
+                    { name: "Sofía Torres", user: "SofíaTorres", pass: "funcat65" },
+                    { name: "Arles Toscano", user: "ArlesToscano2", pass: "coolmoon66" },
+                    { name: "Ariana Zavala", user: "ArianaZavala2", pass: "sillymoon33" }
+                ]
+            },
+            "4D": {
+                code: "CW9E4M",
+                students: [
+                    { name: "Emily Alvarado", user: "EmilyAlvarado2", pass: "lightshark17" },
+                    { name: "Josue Ayllon", user: "JosueAyllon", pass: "blueeagle90" },
+                    { name: "Isaac Barrientos", user: "IsaacBarrientos2", pass: "calmfish45" },
+                    { name: "Sebastian Borjas", user: "SebastianBorjas", pass: "happylion64" },
+                    { name: "Fernanda Bulnes", user: "FernandaBulnes", pass: "fastmoon48" },
+                    { name: "Danna Casco", user: "DannaCasco", pass: "fastbear3" },
+                    { name: "Doris Castro", user: "DorisCastro", pass: "zanyparrot43" },
+                    { name: "Josue Chacon", user: "JosueChacon", pass: "bluehawk91" },
+                    { name: "Matteo Clottes", user: "MatteoClottes", pass: "kindfish26" },
+                    { name: "Camila Cortes", user: "CamilaCortes4", pass: "kindmoon6" },
+                    { name: "Charlotte Cruz", user: "CharlotteCruz5", pass: "smallsun27" },
+                    { name: "Thiago Delgado", user: "ThiagoDelgado8", pass: "speedyhorse9" },
+                    { name: "Linda Herrera", user: "LindaHerrera", pass: "fasthorse15" },
+                    { name: "Mateo Lobo", user: "MateoLobo", pass: "coolbear12" },
+                    { name: "Rebeca Matute", user: "RebecaMatute2", pass: "lightfish14" },
+                    { name: "Andre Padilla", user: "AndrePadilla", pass: "speedybear37" },
+                    { name: "Aaron Saavedra", user: "AaronSaavedra", pass: "funparrot26" },
+                    { name: "Diego Soto", user: "DiegoSoto2", pass: "kindstar36" },
+                    { name: "Leah Vásquez", user: "LeahVásquez", pass: "zanyhawk8" }
+                ]
+            },
+            "4E": {
+                code: "WY4Q8U",
+                students: [
+                    { name: "Adriana Almendarez", user: "AdrianaAlmendarez2", pass: "speedybear52" },
+                    { name: "Mya Amaya", user: "MyaAmaya2", pass: "smallwolf60" },
+                    { name: "Sofia Cruz", user: "SofiaCruz14", pass: "lightparrot90" },
+                    { name: "Eliana Dominguez", user: "ElianaDominguez2", pass: "smallhorse22" },
+                    { name: "Ivan Garcia", user: "IvanGarcia19", pass: "coolwolf83" },
+                    { name: "Zahara Gutierrez", user: "ZaharaGutierrez2", pass: "kindbear91" },
+                    { name: "Ethan Hernandez", user: "EthanHernandez54", pass: "blueshark31" },
+                    { name: "Luis Jimenez", user: "LuisJimenez6", pass: "sillymouse22" },
+                    { name: "Giovanna Moncada", user: "GiovannaMoncada2", pass: "bluetiger39" },
+                    { name: "Thiago Moncada", user: "ThiagoMoncada2", pass: "lightstar90" },
+                    { name: "Adriana Ortez", user: "AdrianaOrtez2", pass: "redmoon95" },
+                    { name: "Ariana Perez", user: "ArianaPerez20", pass: "redeagle34" },
+                    { name: "Ian Ramirez", user: "IanRamirez23", pass: "calmfish85" },
+                    { name: "Edward Rodriguez", user: "EdwardRodriguez23", pass: "redwhale5" },
+                    { name: "Matias Rodriguez", user: "MatiasRodriguez4", pass: "smalltiger39" },
+                    { name: "Enrique Sorto", user: "EnriqueSorto2", pass: "funshark93" },
+                    { name: "Cristian Sosa", user: "CristianSosa4", pass: "redfish44" },
+                    { name: "Rafael Zelaya", user: "RafaelZelaya2", pass: "smallcat38" },
+                    { name: "Dylan Zuniga", user: "DylanZuniga5", pass: "calmmoon11" }
+                ]
+            }
+        };
+
+        const sectionSelect = document.getElementById('section-select');
+        const studentSelect = document.getElementById('student-select');
+        const getLoginBtn = document.getElementById('get-login-btn');
+        const resultCard = document.getElementById('result-card');
+
+        // Populate Student Dropdown when Section Changes
+        sectionSelect.addEventListener('change', function() {
+            const section = this.value;
+            resultCard.style.display = 'none'; // Hide results on change
+            
+            // Clear current options
+            studentSelect.innerHTML = '<option value="">-- Choose Student --</option>';
+            
+            if (section) {
+                studentSelect.disabled = false;
+                const students = schoolData[section].students;
+                
+                // Sort students alphabetically
+                students.sort((a, b) => a.name.localeCompare(b.name));
+
+                students.forEach((student, index) => {
+                    const option = document.createElement('option');
+                    option.value = index;
+                    option.textContent = student.name;
+                    studentSelect.appendChild(option);
+                });
+            } else {
+                studentSelect.disabled = true;
+            }
+        });
+
+        // Display Data on Click
+        getLoginBtn.addEventListener('click', function() {
+            const section = sectionSelect.value;
+            const studentIndex = studentSelect.value;
+
+            if (section && studentIndex !== "") {
+                const classCode = schoolData[section].code;
+                const student = schoolData[section].students[studentIndex];
+
+                document.getElementById('res-username').textContent = student.user;
+                document.getElementById('res-password').textContent = student.pass;
+                document.getElementById('res-code').textContent = classCode;
+
+                resultCard.style.display = 'block';
+            } else {
+                alert("Please select both a section and a student name.");
+            }
+        });
+    </script>
+</body>
+</html>
